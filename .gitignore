@@ -1,0 +1,22 @@
+# build
+backend/target/
+frontend/node_modules/
+frontend/dist/
+
+# secrets
+backend/.env
+.env
+
+# logs
+*.log
+logs/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+*.swp
+
+# OS
+Thumbs.db

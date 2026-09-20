@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:finance_copilot_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration
+      - org.springframework.boot.data.mongodb.autoconfigure.MongoDataAutoConfiguration
+      - org.springframework.boot.data.mongodb.autoconfigure.MongoRepositoriesAutoConfiguration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+app:
+  jwt:
+    secret: test-jwt-secret-that-is-at-least-32-bytes-long
+    expiration-minutes: 240
+  cors:
+    allowed-origins: http://localhost:5173
+  ai:
+    provider: stub
+    api-key: test
+    model: stub-v1

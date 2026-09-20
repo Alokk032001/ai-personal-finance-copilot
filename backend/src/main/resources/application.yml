@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: ${MONGODB_DATABASE:finance_copilot}
+      auto-index-creation: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-minutes: 240
+  cors:
+    allowed-origins: http://localhost:5173
+  ai:
+    provider: ${AI_PROVIDER:stub}
+    api-key: ${AI_API_KEY:}
+    model: ${AI_MODEL:}
+
+logging:
+  level:
+    com.iitp.financecopilot: DEBUG
