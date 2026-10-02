@@ -17,6 +17,9 @@ export function setToken(token: string | null) {
   else localStorage.removeItem(TOKEN_KEY);
 }
 
+// Safely access Vite environment variables without needing a separate .d.ts file
+const BASE_URL = ((import.meta as unknown) as { env?: { VITE_API_BASE_URL?: string } }).env?.VITE_API_BASE_URL || "";
+
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   const isForm = init.body instanceof FormData;
@@ -26,17 +29,30 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = getToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(path, { ...init, headers });
+  const url = path.startsWith("http") ? path : `\({BASE_URL}\){path}`;
+
+  const res = await fetch(url, { ...init, headers });
   if (res.status === 204) return undefined as T;
 
   const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
+  let data: any = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = { error: text || "Server returned an invalid response" };
+  }
+
   if (!res.ok) {
     if (res.status === 401 && getToken()) {
       setToken(null);
       throw new ApiError(401, "Your session expired. Please log in again.");
     }
-    const message = typeof data.error === "string" ? data.error : "Request failed";
+    const message =
+      typeof data.error === "string"
+        ? data.error
+        : typeof data.message === "string"
+        ? data.message
+        : "Request failed";
     throw new ApiError(res.status, message);
   }
   return data as T;
