@@ -1,11 +1,11 @@
-# Stage 1: Build the jar using official Maven image
-FROM maven:3.9-eclipse-temurin-17 AS build
+# Stage 1: Build the jar using Maven on JDK 25
+FROM maven:3.9-eclipse-temurin-25-alpine AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Stage 2: Create lightweight runtime container
-FROM eclipse-temurin:17-jre-alpine
+# Stage 2: Create lightweight runtime container with JDK/JRE 25
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
