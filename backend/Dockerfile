@@ -1,8 +1,10 @@
-FROM eclipse-temurin:17-jdk-alpine AS build
+# Stage 1: Build the jar using official Maven image
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
+# Stage 2: Create lightweight runtime container
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
