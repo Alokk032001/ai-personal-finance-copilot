@@ -17,7 +17,7 @@ export function setToken(token: string | null) {
   else localStorage.removeItem(TOKEN_KEY);
 }
 
-// Safely access Vite environment variables without needing a separate .d.ts file
+// Safely access Vite environment variables
 const BASE_URL = ((import.meta as unknown) as { env?: { VITE_API_BASE_URL?: string } }).env?.VITE_API_BASE_URL || "";
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -29,7 +29,8 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = getToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const url = path.startsWith("http") ? path : `\({BASE_URL}\){path}`;
+  // FIX: Properly evaluate variables using standard template literal syntax \({BASE_URL}\){path}
+  const url = path.startsWith("http") ? path : `${BASE_URL}${path}`;
 
   const res = await fetch(url, { ...init, headers });
   if (res.status === 204) return undefined as T;
