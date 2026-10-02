@@ -9,8 +9,7 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
-  data:
-    mongodb:
+  mongodb:
       uri: ${MONGODB_URI}
       database: ${MONGODB_DATABASE:finance_copilot}
       auto-index-creation: true
